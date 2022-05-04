@@ -1,0 +1,67 @@
+<%- include('../_layouts/adminheader'); %>
+<br></br>
+<div class="container">
+
+    <h2 class="page-title mb-3">Pages</h2>
+    <a href="/admin/pages/add-page" class="btn btn-primary">Add a new page</a>
+    <br></br>
+
+    <table class="table table-striped sorting">
+        <thead>
+            <th>Title</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </thead>
+        <tbody>
+            <% pages.forEach(page => { %>
+                <tr id="id_<%= page.id %>" class="<%= page.slug%>">
+                    <td><%= page.title %></td>
+                    <td><a href="/admin/pages/edit-page/<%= page.id %>">Edit</a></td>
+                    <% if(page.slug ==='home'){ %>
+                        <td></td>
+                    <% }else{  %>
+                        <td><a class="confirmDeletion" href="/admin/pages/delete-page/<%= page.id%>">Delete</a></td>                        
+                    <% } %>
+                    
+                </tr>
+            <% }); %>
+            
+            
+        </tbody>
+    </table>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+
+const tbody = document.querySelector('tbody');
+// console.log(tbody)
+Sortable.create(tbody,{
+    filter: '.home',
+    onUpdate: function (/**Event*/evt) {
+		// same properties as onEnd
+        // console.log(evt.target.rows)
+        const items = [...evt.target.rows];
+        const ids = items.map(item=> {return item.id.slice(3)})
+        const url = "/admin/pages/reorder-pages";
+
+        fetch(url, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(ids)
+            }).then(res => {
+                console.log("Request complete! response:", res);
+        });
+        
+	},
+});
+// onclick="confirmDeletion()"
+// function confirmDeletion(){
+//     // console.log(id,'aa')
+//     if(!confirm('Confirm deletion')) {
+//         event.preventDefault();
+//         return false;
+//     }
+// }
+</script>
+
+<%- include('../_layouts/adminfooter'); %>

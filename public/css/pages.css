@@ -1,0 +1,34 @@
+.pimage{
+    width: 150px;
+    height: 150px;
+}
+.pBigImage{
+    width: 400px;
+    height: 400px;
+}
+.all-products{
+    margin-left: 10px;
+}
+.product{
+    margin-bottom: 50px;
+}
+
+.price{
+    font-size: 18px;
+}
+ul.gallery li {
+    display: inline-block;
+    margin: 20px;
+    list-style: none;
+}
+table.alignmiddle td {
+    vertical-align: middle !important;
+}
+.active-style{
+    /* background-color:rgb(27,92,243);  */
+    /* border-bottom: 0.1em solid rgb(27,92,243) ; */
+    color: rgb(27,92,243) !important;
+}
+a{
+    text-decoration: none;
+}

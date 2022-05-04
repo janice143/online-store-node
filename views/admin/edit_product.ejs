@@ -1,0 +1,118 @@
+<%- include('../_layouts/adminheader'); %>
+<br></br>
+<div class="container">
+
+    <h2 class="page-title mb-3">Edit a product</h2>
+    <a href="/admin/products" class="btn btn-primary">Back to all products</a>
+    <br></br>
+
+    <form method = "post" action="/admin/products/edit-product/<%= id %>" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="">Title</label>
+            <input type="text" name="title" value="<%= title %>" class="form-control" placeholder="Title">
+        </div>
+        <div class="mb-3">
+            <label for="">Descirption</label>
+            <textarea name="description" cols="30" rows="10" class="form-control" placeholder="Description"><%= description %></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="">Category</label>
+            <select name="category" class="form-control">
+                <% categories.forEach(cat=>{ %>
+                    <option value="<%= cat.slug %>"
+                        <% if(cat.slug===category) { %>
+                            selected = "selected"
+                        <% } %> >
+                        <%= cat.title %>
+                    </option>
+                <% }) %>
+            </select>
+            
+
+        </div>
+        <div class="mb-3">
+            <label for="">Price</label>
+            <input type="text" name="price" value="<%= price %>" class="form-control" placeholder="Price">
+        </div>
+        <div class="mb-3">
+            <label for="">Current Image</label>
+            <p>
+                <% if (image == "") { %>
+                    <img class="producton-image" src="/images/noimage.png" alt="">
+                    <% } else {%>
+                    <img class="producton-image" src="/product_images/<%= id %>/<%= image %>" alt="">
+                <% } %>
+            </p>
+        </div>
+        <div class="mb-3">
+            <label for="">Upload Image</label>
+            <input type="file" name="image" id="input" class="form-control" accept="image/png, image/jpeg, image/jpg">
+            <img src="#" alt="" id="imgPreview">
+        </div>
+
+        <input type="hidden" name="hiddenImage" value="<%= image %>">
+        <button class="btn btn-outline-primary">Submit</button>
+    </form>
+    <div class="mt-3">
+        <h2 class="page-title">Gallery</h2>
+        <ul class="gallery">
+            <% galleryImages.forEach(img=>{ %> 
+                <% if (img != "thumbs") { %>
+                    <li>
+                        <img src="/product_images/<%= id %>/gallery/thumbs/<%= img %>  " alt="">&nbsp;&nbsp;
+                        <a class="confirmDeletion" href="/admin/products/delete-image/<%= img %>?id=<%= id %>  ">delete</a>
+                    </li>
+                <% } %> 
+            <% }) %> 
+        </ul>
+    </div>
+    <form action="/admin/products/product-gallery/<%= id %>" method="post" enctype="multipart/form-data" class="dropzone" id="my-great-dropzone" >
+        <div class="fallback">
+            <input type="file" name="file" multiple>
+            <input type="submit" value="upload">
+        </div>
+    </form>
+</div>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
+<script>
+    const imgPreview = document.querySelector('#imgPreview')
+    const input = document.querySelector('#input')
+    // 预览图片
+    function readUrl(e){
+        // console.log('change',e,e.target)
+        // FileReader support
+        if(e.target.files && e.target.files[0]){
+            const reader = new FileReader()
+            reader.onload = function(){
+                imgPreview.src = reader.result;
+                imgPreview.width = 100
+                imgPreview.height = 100
+                // console.log(reader.result)
+            }
+            reader.readAsDataURL(e.target.files[0])
+        }
+    }
+    // function test(){
+    //     console.log('aa')
+    // }
+    input.addEventListener('change',readUrl);
+
+    // 拖拽上传 dropzone 
+    // const dropzone = new Dropzone("div.my-dropzone", { url: "/file/post" });
+    // const myGreatDropzone = document.querySelector('#my-great-dropzone')
+    Dropzone.options.myGreatDropzone = { // camelized version of the `id`
+    acceptedFiles:"image/*",
+    init: function() {
+        this.on("queuecomplete", function(file) {
+            // setTimeout(function() {
+            // location.reload()
+            // }, 1000); 
+        });
+    }
+  };
+
+
+</script>
+<%- include('../_layouts/adminfooter'); %>

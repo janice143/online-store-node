@@ -1,0 +1,126 @@
+<%- include('_layouts/header'); %>
+
+<script>
+    const stripePublicKey = '<%= stripePublicKey  %>'
+    const cart = JSON.parse(`<%- JSON.stringify(cart) %>`);
+</script>
+<div class="my-3 p-3">
+    <% if(cart !== undefined){ %> 
+        <h2 class="border-bottom pb-5 mb-0">My Cart</h1>
+        <br>
+
+        <table class="table alignmiddle">
+            <tr class="p-5">
+                <th>Image</th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th></th>
+                <th>Subtotal</th>
+            </tr>
+            <% let total = 0 %>
+            <% cart.forEach(item=>{ %> 
+            <% const sub = parseFloat(item.quantity * item.price).toFixed(2) %> 
+            <!-- 注意下面+号的使用，将一个数字的字符串转化为数字 -->
+            <% total += +sub %> 
+                <tr class="p-5">
+                    <td>
+                        <img class="pimage" src="<%= item.image %> " alt="">   
+                    </td>
+                    <td><%= item.title %></td>
+                    <td>$<%= item.price %></td>
+                    <td><%= item.quantity %></td>
+                    <td>
+                        <a href="/cart/update/<%= item.title %>?action=add">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </a>
+                        <a href="/cart/update/<%= item.title %>?action=remove">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                            </svg>
+                        </a>
+                        <a href="/cart/update/<%= item.title %>?action=clear">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </a>
+                    </td>
+                    <td>$<%= sub %> </td>
+                </tr>
+            <% }) %>
+            <tr class="p-5">
+                <td class="cart-total-price" colspan="6" align="right"><b>Total: </b> $<%= parseFloat(total).toFixed(2) %></td>
+            </tr>
+            <tr class="p-5">
+                <td colspan="5" align="right">
+                    <a class="confirmDeletion btn btn-danger" href="/cart/clear">Clear cart</a>
+                </td>
+                <td colspan="5" align="right">
+                    <button class="btn btn-primary btn-purchase" type="button">Buy now</button>
+                </td>
+            </tr>
+        </table>
+    <% }else{ %> 
+        <h3>Your cart is empty.</h3>
+    <% } %> 
+</div>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script>
+const btnPurchase = document.querySelector('.btn-purchase');
+btnPurchase.addEventListener('click', purchaseClicked);
+
+// 处理支付：发送Post请求，提交  数据
+const stripeHandler = StripeCheckout.configure({
+    key: stripePublicKey,
+    locale: 'en',
+    token: function(token) {
+        const items=[]
+        for (let i = 0; i < cart.length; i++) {
+            const quantity = cart[i].quantity
+            const title = cart[i].title
+            items.push({
+                title: title,
+                quantity: quantity
+            })
+        }
+
+        fetch('/cart/purchase', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                stripeTokenId: token.id,
+                items: items
+            })
+        }).then(res=>{
+            return res.json()
+        }).then(data=>{
+            alert(data.message)
+            location.reload();
+        }).catch(function(error) {
+            console.error(error)
+        })
+    }
+})
+
+function purchaseClicked(){
+        
+    const priceElement = document.querySelector('.cart-total-price');
+    var price = priceElement.innerText.replace('Total: $', '')*100;
+
+    // console.log(cart,cart.length)
+    stripeHandler.open({
+        amount: price
+    })    
+}
+
+</script>
+
+<%- include('_layouts/footer'); %>

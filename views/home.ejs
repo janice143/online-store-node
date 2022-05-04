@@ -1,0 +1,29 @@
+<%- include('_layouts/header'); %>
+
+
+<div class="all-products row row-cols-4 ">
+    <% products.forEach(product => { %>
+        <div class="col product">
+            <div class="card shadow-sm text-center pt-3">
+                <a href="/all-products/<%= product.category %>/<%= product.slug %>">
+                    <% if(product.image == ""){%>
+                        <img class="pimage card-img-top" src="/images/noimage.png" alt="">
+                    <% }else{ %>
+                        <img class="pimage card-img-top" src="/product_images/<%= product._id %>/<%= product.image %>">
+                    <% } %>
+                </a>
+                <div class="card-body">
+                    <h6 class="card-title"><%= product.title %></h3>
+                    <h6 class="price card-text">$<%= parseFloat(product.price).toFixed(2) %></h4>
+                    <a class="btn btn-sm btn-outline-success" href="/all-products/<%= product.category %>/<%= product.slug %> ">View details</a>
+                </div>
+            </div>
+           
+        </div>
+    <% }); %>
+</div>
+
+
+
+
+<%- include('_layouts/footer'); %>

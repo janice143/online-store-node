@@ -1,0 +1,18 @@
+<%- include('../_layouts/adminheader'); %>
+<br></br>
+<div class="container">
+
+    <h2 class="page-title mb-3">Edit a category</h2>
+    <a href="/admin/categories" class="btn btn-primary">Back to all categories</a>
+    <br></br>
+
+    <form method = "post" action="/admin/categories/edit-category/<%= id %>">
+        <div class="mb-3">
+            <label for="">Title</label>
+            <input type="text" name="title" value="<%= title %>" class="form-control" placeholder="Title">
+        </div>
+        <button class="btn btn-outline-primary">Submit</button>
+    </form>
+</div>
+
+<%- include('../_layouts/adminfooter'); %>

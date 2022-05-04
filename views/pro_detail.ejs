@@ -1,0 +1,44 @@
+<%- include('_layouts/header'); %>
+
+<div class="pro-detail">
+    <div class="row row-cols-2">
+        <div class="col-4 cart text-center pt-3">
+            <% if(product.image == ""){%>
+                <img class="pBigImage" src="/images/noimage.png" alt="">
+            <% }else{ %>
+                <img class="pBigImage" src="/product_images/<%= product._id %>/<%= product.image %>">
+            <% } %>
+            
+
+        </div>
+        <div class="col-8 p-5">
+            <h2 class=" fw-bold" ><%= product.title %></h2>
+            <p><%= product.description %></p>
+            <p class="text-danger fw-bold h4 mt-3">$<%= parseFloat(product.price).toFixed(2) %></p>
+            <% if(loggedIn){ %> 
+                <p class="mt-5"><a class="btn btn-sm btn-outline-success" href="/cart/add/<%= product.slug %>">Add to cart</a></p>
+            <% }else{ %> 
+                Log in to purchase items.    
+            <% } %> 
+            
+        </div>
+    </div>
+<div>
+<br>        
+<div>
+    <ul class="gallery">
+        <% galleryImages.forEach(function(image){ %>
+        <% if (image != "thumbs") { %>
+        <li  class="shadow-sm text-center rounded">
+            <a href="#">
+                <img class="pimage shadow-sm" src="/product_images/<%= product.id %>/gallery/thumbs/<%= image %>" alt="">
+            </a>
+        </li>
+        <% } %>
+        <% }); %>
+    </ul>
+</div>
+
+
+
+<%- include('_layouts/footer'); %>

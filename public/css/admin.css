@@ -1,0 +1,28 @@
+
+.sorting tr:not(.home){
+    cursor: pointer;
+}
+#imgPreview{
+    margin:20px;
+
+}
+.producton-image{
+    width: 50px;
+    height: 50px;
+}
+ul.gallery {
+    padding: 0;
+}
+
+ul.gallery li:first-child {
+    margin-left: 0;
+}
+
+ul.gallery li {
+    margin: 20px;
+    display: inline-block;
+    list-style: none;
+}
+a{
+    text-decoration: none;
+}
